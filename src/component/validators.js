@@ -1,12 +1,12 @@
 const validatorName = (name) => {
-  if (name !== String) {
+  if (typeof name !== "string") {
     return "Ошибка в именни";
   }
   return "";
 };
 
 const validatorSurname = (surname) => {
-  if (surname !== String) {
+  if (typeof surname !== "string") {
     return "Ошибка в фамилии";
   }
   return "";
@@ -29,10 +29,14 @@ const validatorPhone = (phone) => {
 };
 
 const validatorAgreement = (agreement) => {
-  if (agreement !== true) {
+  if (!agreement) {
     return "Вы не согласилсь на соглашение";
   }
-  return agreement === false;
+  return;
+};
+
+const validatorSexSelect = (sexSelect) => {
+  return true;
 };
 
 export {
@@ -41,4 +45,5 @@ export {
   validatorMail,
   validatorPhone,
   validatorAgreement,
+  validatorSexSelect,
 };

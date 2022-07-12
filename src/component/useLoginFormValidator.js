@@ -5,6 +5,7 @@ import {
   validatorMail,
   validatorPhone,
   validatorAgreement,
+  validatorSexSelect,
 } from "./validators";
 
 const touchErrors = (errors) => {
@@ -17,7 +18,7 @@ const touchErrors = (errors) => {
   }, {});
 };
 
-const useLoginFormValidator = (form) => {
+export const useLoginFormValidator = (form) => {
   const [errors, setErrors] = useState({
     name: {
       dirty: false,
@@ -39,18 +40,28 @@ const useLoginFormValidator = (form) => {
       error: false,
       message: "",
     },
-    // agreement: {
-    //     dirty: false,
-    //     error: false,
-    //     message: "",
-    //   },
+    agreement: {
+      dirty: false,
+      error: false,
+      message: "",
+    },
+    sexSelect: {
+      dirty: false,
+      error: false,
+      message: "",
+    },
+    area: {
+      dirty: false,
+      error: false,
+      message: "",
+    },
   });
 
   const validateForm = ({ form, field, errors, forceTouchErrors = false }) => {
     let isValid = true;
 
-    const { name, username, mail, phone, agreement } = form;
-    const nextErrors = JSON.parse(JSON.stringify(errors));
+    const { name, surname, mail, phone, agreement, sexSelect, area } = form;
+    let nextErrors = JSON.parse(JSON.stringify(errors));
 
     if (forceTouchErrors) {
       nextErrors = touchErrors(errors);
@@ -64,24 +75,45 @@ const useLoginFormValidator = (form) => {
     }
 
     if (nextErrors.surname.dirty && (field ? field === "surname" : true)) {
-      const surnameMassage = validatorName(name, form);
+      const surnameMassage = validatorSurname(surname, form);
       nextErrors.surname.error = !!surnameMassage;
       nextErrors.surname.message = surnameMassage;
       if (!!surnameMassage) isValid = false;
     }
 
-    if (nextErrors.email.dirty && (field ? field === "phone" : true)) {
-      const emailMessage = validatorName(name, form);
-      nextErrors.email.error = !!emailMessage;
-      nextErrors.email.message = emailMessage;
+    if (nextErrors.phone.dirty && (field ? field === "phone" : true)) {
+      const phoneMessage = validatorPhone(phone, form);
+      nextErrors.phone.error = !!phoneMessage;
+      nextErrors.phone.message = phoneMessage;
+      if (!!phoneMessage) isValid = false;
+    }
+
+    if (nextErrors.mail.dirty && (field ? field === "mail" : true)) {
+      const emailMessage = validatorMail(mail, form);
+      nextErrors.mail.error = !!emailMessage;
+      nextErrors.mail.message = emailMessage;
       if (!!emailMessage) isValid = false;
     }
 
-    if (nextErrors.email.dirty && (field ? field === "email" : true)) {
-      const emailMessage = validatorMail(mail, form);
-      nextErrors.email.error = !!emailMessage;
-      nextErrors.email.message = emailMessage;
-      if (!!emailMessage) isValid = false;
+    if (nextErrors.agreement.dirty && (field ? field === "agreement" : true)) {
+      const agreementMessage = validatorAgreement(agreement, form);
+      nextErrors.agreement.error = !!agreementMessage;
+      nextErrors.agreement.message = agreementMessage;
+      if (!!agreementMessage) isValid = false;
+    }
+
+    if (nextErrors.area.dirty && (field ? field === "area" : true)) {
+      const areaMessage = validatorMail(area, form);
+      nextErrors.area.error = !!areaMessage;
+      nextErrors.area.message = areaMessage;
+      if (!!areaMessage) isValid = false;
+    }
+
+    if (nextErrors.sexSelect.dirty && (field ? field === "sexSelect" : true)) {
+      const sexSelectMessage = validatorSexSelect(sexSelect, form);
+      nextErrors.sexSelect.error = !!sexSelectMessage;
+      nextErrors.sexSelect.message = sexSelectMessage;
+      if (!!sexSelectMessage) isValid = false;
     }
 
     setErrors(nextErrors);

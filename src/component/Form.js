@@ -1,80 +1,93 @@
 import React from "react";
 import { useState } from "react";
 import styled from "styled-components";
+import { useLoginFormValidator } from "./useLoginFormValidator";
 
 function Form() {
-  const [name, setName] = useState("");
-  const [surname, setSurname] = useState("");
-  const [mail, setMail] = useState("");
-  const [phone, setPhone] = useState("");
-  const [sexSelect, setSexSelect] = useState("man");
-  const [agreement, setAgreement] = useState(false);
-  const [area, setArea] = useState("");
+  const [form, setForm] = useState({
+    name: "",
+    surname: "",
+    mail: "",
+    phone: "",
+    sexSelect: "man",
+    agreement: false,
+    area: "",
+  });
+  const { errors, validateForm, onBlurField } = useLoginFormValidator(form);
 
-  const handleSetName = (event) => {
-    setName(event.target.value);
-  };
-
-  const handleSetSurname = (event) => {
-    setSurname(event.target.value);
-  };
-
-  const handleSetMail = (event) => {
-    setMail(event.target.value);
-  };
-
-  const handleSetPhone = (event) => {
-    setPhone(event.target.value);
-  };
-
-  const handleSetSex = (event) => {
-    setSexSelect(event.target.value);
-  };
-
-  const handleAgreement = () => {
-    setAgreement(!agreement);
-  };
-
-  const handleSetArea = (event) => {
-    setArea(event.target.value);
+  const onUpdateField = (e) => {
+    const field = e.target.name;
+    const nextFormState = {
+      ...form,
+      [field]: e.target.value,
+    };
+    setForm(nextFormState);
+    if (errors[field].dirty)
+      validateForm({
+        form: nextFormState,
+        errors,
+        field,
+      });
   };
 
   const onSubmitForm = (event) => {
-    alert(123);
+    // alert(123);
   };
 
   return (
     <StyledWraper>
       <form className="form" onSubmit={onSubmitForm}>
+        {errors.name.dirty && errors.name.error ? (
+          <p style={{ color: "red" }}>{errors.name.message}</p>
+        ) : null}
         <input
           className="name"
-          value={name}
-          onChange={handleSetName}
+          value={form.name}
+          onChange={onUpdateField}
+          onBlur={onBlurField}
           placeholder="Имя"
+          name="name"
         ></input>
+        {errors.surname.dirty && errors.surname.error ? (
+          <div style={{ color: "red" }}>{errors.surname.message}</div>
+        ) : null}
         <input
           className="surname"
-          value={surname}
-          onChange={handleSetSurname}
+          value={form.surname}
+          onChange={onUpdateField}
+          onBlur={onBlurField}
           placeholder="Фамилия"
+          name="surname"
         ></input>
+        {errors.mail.dirty && errors.mail.error ? (
+          <p style={{ color: "red" }}>{errors.mail.message}</p>
+        ) : null}
         <input
           className="mail"
-          value={mail}
-          onChange={handleSetMail}
+          value={form.mail}
+          onChange={onUpdateField}
+          onBlur={onBlurField}
           placeholder="email"
+          name="mail"
         ></input>
+        {errors.phone.dirty && errors.phone.error ? (
+          <p style={{ color: "red" }}>{errors.phone.message}</p>
+        ) : null}
         <input
           className="phone"
-          value={phone}
-          onChange={handleSetPhone}
+          value={form.phone}
+          onChange={onUpdateField}
+          onBlur={onBlurField}
           placeholder="телефон"
+          name="phone"
         ></input>
         <div className="bar">
           <select
             className="sexSelect"
-            value={sexSelect}
-            onChange={handleSetSex}
+            value={form.sexSelect}
+            onChange={onUpdateField}
+            onBlur={onBlurField}
+            name="sexSelector"
           >
             <option value={"man"}>муж</option>
             <option value={"woman"}>жен</option>
@@ -82,16 +95,20 @@ function Form() {
           <input
             className="checkbox"
             type="checkbox"
-            checked={agreement}
-            onChange={handleAgreement}
+            checked={form.agreement}
+            onChange={onUpdateField}
+            onBlur={onBlurField}
+            name="agreement"
           />
-          <p>соглашение: {agreement ? "согласен" : "не согласен"}</p>
+          <p>соглашение: {form.agreement ? "согласен" : "не согласен"}</p>
         </div>
         <textarea
           className="area"
-          value={area}
-          onChange={handleSetArea}
+          value={form.area}
+          onChange={onUpdateField}
+          onBlur={onBlurField}
           placeholder="Жалоба"
+          name="area"
         ></textarea>
         <button className="button" type="submit">
           отправить
