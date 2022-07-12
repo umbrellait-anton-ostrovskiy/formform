@@ -9,17 +9,24 @@ function Form() {
     surname: "",
     mail: "",
     phone: "",
-    sexSelect: "man",
+    sexSelector: "man",
     agreement: false,
     area: "",
   });
+
   const { errors, validateForm, onBlurField } = useLoginFormValidator(form);
 
   const onUpdateField = (e) => {
     const field = e.target.name;
+    let value = null;
+    if (e.target.type === "checkbox") {
+      value = e.target.checked;
+    } else {
+      value = e.target.value;
+    }
     const nextFormState = {
       ...form,
-      [field]: e.target.value,
+      [field]: value,
     };
     setForm(nextFormState);
     if (errors[field].dirty)
@@ -31,7 +38,17 @@ function Form() {
   };
 
   const onSubmitForm = (event) => {
-    // alert(123);
+    event.preventDefault();
+    const nextFormState = {
+      ...form,
+    };
+    setForm(nextFormState);
+    validateForm({
+      form: nextFormState,
+      errors,
+      field: "agreement",
+      force: true,
+    });
   };
 
   return (
@@ -49,7 +66,7 @@ function Form() {
           name="name"
         ></input>
         {errors.surname.dirty && errors.surname.error ? (
-          <div style={{ color: "red" }}>{errors.surname.message}</div>
+          <p style={{ color: "red" }}>{errors.surname.message}</p>
         ) : null}
         <input
           className="surname"
@@ -83,8 +100,8 @@ function Form() {
         ></input>
         <div className="bar">
           <select
-            className="sexSelect"
-            value={form.sexSelect}
+            className="sexSelector"
+            value={form.sexSelector}
             onChange={onUpdateField}
             onBlur={onBlurField}
             name="sexSelector"
@@ -93,15 +110,23 @@ function Form() {
             <option value={"woman"}>жен</option>
           </select>
           <input
+            id="label"
             className="checkbox"
             type="checkbox"
             checked={form.agreement}
             onChange={onUpdateField}
-            onBlur={onBlurField}
             name="agreement"
-          />
-          <p>соглашение: {form.agreement ? "согласен" : "не согласен"}</p>
+          />{" "}
+          <label for="label" className="label">
+            соглашение: {form.agreement ? "согласен" : "не согласен"}
+          </label>
         </div>
+        {errors.agreement.error ? (
+          <p style={{ color: "red" }}>{errors.agreement.message}</p>
+        ) : null}
+        {errors.area.dirty && errors.area.error ? (
+          <div style={{ color: "red" }}>{errors.area.message}</div>
+        ) : null}
         <textarea
           className="area"
           value={form.area}
@@ -147,8 +172,9 @@ const StyledWraper = styled.div`
     flex-direction: row;
     margin-top: 10px;
   }
-  .sexSelect {
+  .sexSelector {
     width: 100px;
+    height: 50px;
     margin-left: 150px;
     border-radius: 15px;
   }
@@ -156,7 +182,8 @@ const StyledWraper = styled.div`
     width: 30px;
     height: 30px;
     margin-left: 150px;
-    margin-top: 10px;
+    margin-top: auto;
+    margin-bottom: auto;
     border-radius: 15px;
   }
   .area {
@@ -176,5 +203,9 @@ const StyledWraper = styled.div`
     margin-right: auto;
     border-radius: 15px;
     margin-bottom: 10px;
+  }
+  .label {
+    margin-top: auto;
+    margin-bottom: auto;
   }
 `;
